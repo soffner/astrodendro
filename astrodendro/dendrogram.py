@@ -17,7 +17,7 @@ import warnings
 from .structure import Structure
 from .progressbar import AnimatedProgressBar
 from . import pruning
-
+from scipy.spatial import cKDTree # neighbours_gizmo
 
 def _sorted_by_idx(d):
     return sorted(d, key=lambda s: s.idx)
@@ -92,7 +92,8 @@ class Dendrogram(object):
 
     @staticmethod
     def compute(data, min_value="min", min_delta=0, min_npix=0,
-                is_independent=None, verbose=False, neighbours=None, wcs=None):
+                is_independent=None, verbose=False, neighbours=None, wcs=None,
+                pos=None):
         """
         Compute a dendrogram from a Numpy array.
 
@@ -138,6 +139,7 @@ class Dendrogram(object):
             on the image axes. (Requires that `wcsaxes` is installed; see
             http://wcsaxes.readthedocs.org/ for install instructions.)
 
+       pos : optional array of the same size of data containing the positions
 
         Examples
         --------
@@ -173,6 +175,9 @@ class Dendrogram(object):
         self.data = data
         self.n_dim = len(data.shape)
         self.wcs = wcs
+        if pos is not None:
+            self.pos = pos
+            self.tree = cKDTree(pos)
         # For reference, store the parameters used:
         self.params = dict(min_npix=min_npix, min_value=min_value,
                            min_delta=min_delta)
@@ -356,6 +361,25 @@ class Dendrogram(object):
         List of N-dimensional locations of each neighbour
         """
         return [tuple(c) for c in np.add(_offsets[self.n_dim], idx)]
+    
+    def neighbours_gizmo(self, idx):
+        """
+        Return a list of indices to the neighbours of a given pixel.
+
+        This method can be overridden to handle custom layouts
+        (e.g., healpix maps, periodic boundaries, etc.)
+
+        Parameters
+        ----------
+        idx : tuple
+            The N-dimensional location of a pixel in the data
+
+        Returns
+        -------
+        List of N-dimensional locations of each neighbour
+        """
+        neighbors, indicies = self.tree.query(self.pos[idx], 6) # 6 neighbours
+        return [tuple(c) for c in indicies]
 
     @property
     def trunk(self):
