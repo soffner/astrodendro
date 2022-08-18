@@ -224,7 +224,7 @@ class Dendrogram(object):
             # any one dimension will always land on an extra "padding" cell
             # with value zero added above when index_map was created
 
-            indices_adjacent = neighbours(self, indices[i])
+            indices_adjacent = neighbours_gizmo(self, indices[i])
             adjacent = [self.index_map[c] for c in indices_adjacent
                         if self.index_map[c] > -1]
 
