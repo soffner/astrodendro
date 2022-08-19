@@ -224,7 +224,7 @@ class Dendrogram(object):
             # any one dimension will always land on an extra "padding" cell
             # with value zero added above when index_map was created
 
-            indices_adjacent = neighbours_gizmo(self, indices[i])
+            indices_adjacent = neighbours(self, indices[i])
             adjacent = [self.index_map[c] for c in indices_adjacent
                         if self.index_map[c] > -1]
 
@@ -348,10 +348,10 @@ class Dendrogram(object):
         """
         Return a list of indices to the neighbours of a given pixel.
 
-        This method can be overridden to handle custom layouts
+           This method can be overridden to handle custom layouts
         (e.g., healpix maps, periodic boundaries, etc.)
 
-        Parameters
+       Parameters
         ----------
         idx : tuple
             The N-dimensional location of a pixel in the data
@@ -360,9 +360,9 @@ class Dendrogram(object):
         -------
         List of N-dimensional locations of each neighbour
         """
-        return [tuple(c) for c in np.add(_offsets[self.n_dim], idx)]
+    #   return [tuple(c) for c in np.add(_offsets[self.n_dim], idx)]
     
-    def neighbours_gizmo(self, idx):
+    #def neighbours_gizmo(self, idx):
         """
         Return a list of indices to the neighbours of a given pixel.
 
