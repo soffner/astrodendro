@@ -224,7 +224,7 @@ class Dendrogram(object):
             # any one dimension will always land on an extra "padding" cell
             # with value zero added above when index_map was created
 
-            indices_adjacent = neighbours(self, indices[i])
+            indices_adjacent = neighbours(self, indices[i])  
             adjacent = [self.index_map[c] for c in indices_adjacent
                         if self.index_map[c] > -1]
 
@@ -379,7 +379,8 @@ class Dendrogram(object):
         List of N-dimensional locations of each neighbour
         """
         neighbors, indicies = self.tree.query(self.pos[idx], 6) # 6 neighbours
-        return [tuple(c) for c in indicies]
+        indlist = np.array_split(indicies[0],6)
+        return [tuple(c) for c in indlist]
 
     @property
     def trunk(self):
